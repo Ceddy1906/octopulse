@@ -1,0 +1,208 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "OctoPulse verbinden",
+        "description": "Trage die Adresse deines OctoPulse-Servers und einen API-Key ein. Den Key erzeugst du in OctoPulse unter „API“. Er hat die Rechte seines Benutzers: Mit dem Key eines Admins siehst du alle Checks, mit dem eines normalen Benutzers nur dessen eigene.",
+        "data": {
+          "url": "Adresse des Servers",
+          "api_key": "API-Key",
+          "verify_ssl": "Zertifikat prüfen"
+        },
+        "data_description": {
+          "url": "Zum Beispiel https://octopulse.example.com",
+          "api_key": "Beginnt mit ocp_",
+          "verify_ssl": "Nur ausschalten, wenn der Server ein selbst ausgestelltes Zertifikat benutzt."
+        }
+      },
+      "heartbeat": {
+        "title": "Lebenszeichen von Home Assistant",
+        "description": "OctoPulse kann auch Home Assistant selbst überwachen: Die Integration schickt regelmäßig ein Lebenszeichen. Bleibt es aus (Home Assistant ist abgestürzt, das Netzwerk ist weg), schlägt OctoPulse Alarm.",
+        "menu_options": {
+          "heartbeat_create": "Neuen Heartbeat-Check in OctoPulse anlegen (empfohlen)",
+          "heartbeat_url": "Vorhandene Ping-Adresse benutzen",
+          "finish": "Ohne Heartbeat fertigstellen"
+        }
+      },
+      "heartbeat_create": {
+        "title": "Heartbeat-Check anlegen",
+        "description": "Die Integration legt in OctoPulse einen Heartbeat-Check an und speichert dessen Ping-Adresse selbst. Du musst nichts kopieren.",
+        "data": {
+          "heartbeat_name": "Name des Checks",
+          "heartbeat_minutes": "Lebenszeichen alle",
+          "heartbeat_grace_minutes": "Karenzzeit"
+        },
+        "data_description": {
+          "heartbeat_name": "So heißt der Check in OctoPulse.",
+          "heartbeat_minutes": "Wie oft Home Assistant sich meldet. Zugleich das erwartete Intervall des Checks.",
+          "heartbeat_grace_minutes": "Wie lange OctoPulse nach dem erwarteten Termin noch wartet, bevor es Alarm gibt."
+        }
+      },
+      "heartbeat_url": {
+        "title": "Vorhandene Ping-Adresse",
+        "description": "Trage die Ping-Adresse eines Heartbeat-Checks ein (https://…/ping/…). Zur Prüfung wird gleich ein Lebenszeichen gesendet.",
+        "data": {
+          "heartbeat_url": "Ping-Adresse",
+          "heartbeat_minutes": "Lebenszeichen alle"
+        },
+        "data_description": {
+          "heartbeat_url": "Die Adresse enthält ein Geheimnis und wird wie ein Passwort behandelt.",
+          "heartbeat_minutes": "Muss kürzer sein als Intervall plus Karenzzeit des Checks in OctoPulse."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Neuer API-Key",
+        "description": "Der API-Key für {host} wurde abgelehnt. Erzeuge in OctoPulse unter „API“ einen neuen Key und trage ihn hier ein.",
+        "data": {
+          "api_key": "API-Key"
+        }
+      },
+      "reconfigure": {
+        "title": "Server ändern",
+        "data": {
+          "url": "Adresse des Servers",
+          "api_key": "API-Key",
+          "verify_ssl": "Zertifikat prüfen"
+        }
+      }
+    },
+    "error": {
+      "invalid_url": "Das ist keine gültige Adresse. Beispiel: https://octopulse.example.com",
+      "cannot_connect": "Keine Verbindung zum Server. Adresse, Netzwerk und Zertifikat prüfen.",
+      "invalid_auth": "Der API-Key wurde abgelehnt.",
+      "invalid_response": "Der Server antwortet, aber nicht wie OctoPulse. Stimmt die Adresse?",
+      "unknown": "Unerwarteter Fehler. Details stehen im Log von Home Assistant.",
+      "create_failed": "OctoPulse hat den Check abgelehnt: {error}",
+      "invalid_ping_url": "Das ist keine Ping-Adresse. Sie sieht aus wie https://…/ping/<token>.",
+      "ping_rejected": "OctoPulse kennt diese Ping-Adresse nicht. Wurde der Token erneuert oder der Check gelöscht?"
+    },
+    "abort": {
+      "already_configured": "Dieser OctoPulse-Server ist bereits eingerichtet.",
+      "reauth_successful": "Der neue API-Key funktioniert.",
+      "reconfigure_successful": "Die Änderungen wurden gespeichert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "OctoPulse einstellen",
+        "menu_options": {
+          "settings": "Abfrageintervall und Takt des Heartbeats",
+          "heartbeat_create": "Neuen Heartbeat-Check in OctoPulse anlegen",
+          "heartbeat_url": "Andere Ping-Adresse benutzen",
+          "heartbeat_remove": "Heartbeat abschalten"
+        }
+      },
+      "settings": {
+        "title": "Intervalle",
+        "data": {
+          "scan_interval": "Checks abfragen alle",
+          "heartbeat_minutes": "Lebenszeichen alle"
+        },
+        "data_description": {
+          "scan_interval": "Wie oft Home Assistant den Status der Checks bei OctoPulse holt.",
+          "heartbeat_minutes": "Gilt nur, wenn ein Heartbeat eingerichtet ist."
+        }
+      },
+      "heartbeat_create": {
+        "title": "Heartbeat-Check anlegen",
+        "description": "Legt einen neuen Heartbeat-Check in OctoPulse an. Ein bisheriger Heartbeat wird danach nicht mehr bedient und in OctoPulse bald überfällig. Lösche ihn dort dann von Hand.",
+        "data": {
+          "heartbeat_name": "Name des Checks",
+          "heartbeat_minutes": "Lebenszeichen alle",
+          "heartbeat_grace_minutes": "Karenzzeit"
+        }
+      },
+      "heartbeat_url": {
+        "title": "Ping-Adresse ändern",
+        "description": "Trage die Ping-Adresse eines Heartbeat-Checks ein (https://…/ping/…). Zur Prüfung wird gleich ein Lebenszeichen gesendet.",
+        "data": {
+          "heartbeat_url": "Ping-Adresse",
+          "heartbeat_minutes": "Lebenszeichen alle"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Keine Verbindung zum Server. Adresse, Netzwerk und Zertifikat prüfen.",
+      "invalid_auth": "Der API-Key wurde abgelehnt.",
+      "unknown": "Unerwarteter Fehler. Details stehen im Log von Home Assistant.",
+      "create_failed": "OctoPulse hat den Check abgelehnt: {error}",
+      "invalid_ping_url": "Das ist keine Ping-Adresse. Sie sieht aus wie https://…/ping/<token>.",
+      "ping_rejected": "OctoPulse kennt diese Ping-Adresse nicht. Wurde der Token erneuert oder der Check gelöscht?"
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "problem": {
+        "name": "Probleme"
+      }
+    },
+    "sensor": {
+      "status": {
+        "name": "Status",
+        "state": {
+          "up": "Online",
+          "late": "Überfällig",
+          "down": "Ausgefallen",
+          "new": "Wartet",
+          "paused": "Pausiert",
+          "maintenance": "Wartung"
+        }
+      },
+      "last_ping": {
+        "name": "Letztes Lebenszeichen"
+      },
+      "checks_total": {
+        "name": "Checks"
+      },
+      "checks_up": {
+        "name": "Checks online"
+      },
+      "checks_problem": {
+        "name": "Checks mit Problem"
+      },
+      "heartbeat_last_sent": {
+        "name": "Letzter Heartbeat"
+      }
+    },
+    "switch": {
+      "monitoring": {
+        "name": "Überwachung"
+      }
+    }
+  },
+  "services": {
+    "send_heartbeat": {
+      "name": "Heartbeat senden",
+      "description": "Schickt sofort ein Signal an die Ping-Adresse des eingerichteten Heartbeats. Mit „Start“ und „Fehler“ lassen sich Abläufe melden, zum Beispiel ein Backup, das beginnt oder scheitert.",
+      "fields": {
+        "signal": {
+          "name": "Signal",
+          "description": "Erfolg ist das normale Lebenszeichen. „Start“ meldet den Beginn eines Laufs, „Fehler“ sein Scheitern und löst sofort Alarm aus."
+        },
+        "message": {
+          "name": "Nachricht",
+          "description": "Optionaler Text (höchstens 4 KB), den OctoPulse im Ereignisprotokoll des Checks ablegt."
+        },
+        "config_entry": {
+          "name": "OctoPulse-Server",
+          "description": "Nur nötig, wenn mehrere Server eingerichtet sind. Ohne Angabe bekommen alle mit Heartbeat das Signal."
+        }
+      }
+    }
+  },
+  "selector": {
+    "signal": {
+      "options": {
+        "success": "Erfolg (Lebenszeichen)",
+        "start": "Start",
+        "fail": "Fehler"
+      }
+    }
+  },
+  "exceptions": {
+    "no_heartbeat": {
+      "message": "Kein OctoPulse-Server mit Heartbeat gefunden. Richte ihn unter Einstellungen > Geräte & Dienste > OctoPulse > Konfigurieren ein."
+    }
+  }
+}

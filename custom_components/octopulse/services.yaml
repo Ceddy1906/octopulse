@@ -1,0 +1,24 @@
+send_heartbeat:
+  fields:
+    signal:
+      required: false
+      default: success
+      selector:
+        select:
+          translation_key: signal
+          mode: dropdown
+          options:
+            - success
+            - start
+            - fail
+    message:
+      required: false
+      example: "Backup fertig, 12 GB"
+      selector:
+        text:
+          multiline: true
+    config_entry:
+      required: false
+      selector:
+        config_entry:
+          integration: octopulse

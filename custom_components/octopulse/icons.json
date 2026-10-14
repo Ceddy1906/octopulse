@@ -1,0 +1,31 @@
+{
+  "entity": {
+    "sensor": {
+      "status": {
+        "default": "mdi:heart-pulse",
+        "state": {
+          "up": "mdi:check-circle-outline",
+          "late": "mdi:clock-alert-outline",
+          "down": "mdi:alert-circle-outline",
+          "new": "mdi:timer-sand",
+          "paused": "mdi:pause-circle-outline",
+          "maintenance": "mdi:wrench-outline"
+        }
+      },
+      "last_ping": { "default": "mdi:heart-flash" },
+      "checks_total": { "default": "mdi:format-list-checks" },
+      "checks_up": { "default": "mdi:check-all" },
+      "checks_problem": { "default": "mdi:alert-outline" },
+      "heartbeat_last_sent": { "default": "mdi:heart-pulse" }
+    },
+    "switch": {
+      "monitoring": {
+        "default": "mdi:eye-outline",
+        "state": { "off": "mdi:eye-off-outline" }
+      }
+    }
+  },
+  "services": {
+    "send_heartbeat": { "service": "mdi:heart-pulse" }
+  }
+}

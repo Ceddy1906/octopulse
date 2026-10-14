@@ -1,0 +1,13 @@
+{
+  "domain": "octopulse",
+  "name": "OctoPulse",
+  "version": "0.1.0",
+  "config_flow": true,
+  "documentation": "https://dev.lamaswelt.eu/HomeAssistant/OctoPulse",
+  "issue_tracker": "https://dev.lamaswelt.eu/HomeAssistant/OctoPulse/issues",
+  "codeowners": [],
+  "requirements": [],
+  "dependencies": [],
+  "iot_class": "cloud_polling",
+  "integration_type": "service"
+}

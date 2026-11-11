@@ -73,6 +73,125 @@ def _parse_time(value: Any) -> datetime | None:
     return parsed
 
 
+
+def _text(value: Any) -> str:
+    return value.strip() if isinstance(value, str) else ""
+
+
+def _num(value: Any) -> int | None:
+    # bool ist in Python eine Zahl, in den Daten aber nie gemeint
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return int(value)
+
+
+@dataclass(frozen=True)
+class DeviceUser:
+    name: str
+    active: bool  # False: getrennt (zum Beispiel Remotesitzung ohne Verbindung)
+
+
+@dataclass(frozen=True)
+class DeviceNetwork:
+    name: str  # Anzeigename der Verbindung, bei WLAN der WLAN-Name
+    kind: str  # wlan, ethernet oder other
+    addresses: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class DeviceDisk:
+    drive: str  # zum Beispiel "C:"
+    total_gb: int
+    free_gb: int
+
+    @property
+    def free_percent(self) -> float | None:
+        return round(100 * self.free_gb / self.total_gb, 1) if self.total_gb > 0 else None
+
+
+@dataclass(frozen=True)
+class DeviceData:
+    """Der letzte Stand, den der Windows-Client eines Geräts gemeldet hat (`device` im Check)."""
+
+    reported_at: datetime | None
+    host_name: str
+    domain: str
+    public_ip: str
+    address: str  # Hauptadresse (IPv4 einer echten Verbindung)
+    network: str  # Name des Netzwerks dieser Verbindung
+    networks: tuple[DeviceNetwork, ...]
+    users: tuple[DeviceUser, ...]
+    os_name: str
+    os_version: str
+    os_build: str
+    boot: datetime | None
+    time_zone: str
+    memory_total_mb: int | None
+    memory_free_mb: int | None
+    disks: tuple[DeviceDisk, ...]
+    agent_version: str
+
+    @property
+    def memory_used_percent(self) -> float | None:
+        if not self.memory_total_mb or self.memory_free_mb is None or self.memory_total_mb <= 0:
+            return None
+        return round(100 * (self.memory_total_mb - self.memory_free_mb) / self.memory_total_mb, 1)
+
+    @classmethod
+    def from_json(cls, data: Any) -> "DeviceData | None":
+        """Liest das `device`-Objekt. Bei Unbrauchbarem kommt None, nie eine Ausnahme: Ein Gerät mit seltsamen Daten
+        soll nicht den Abruf aller anderen Checks stören."""
+        if not isinstance(data, dict):
+            return None
+        host = data.get("host") if isinstance(data.get("host"), dict) else {}
+        os_ = data.get("os") if isinstance(data.get("os"), dict) else {}
+        memory = data.get("memory") if isinstance(data.get("memory"), dict) else {}
+        agent = data.get("agent") if isinstance(data.get("agent"), dict) else {}
+
+        networks: list[DeviceNetwork] = []
+        for adapter in data.get("network") or []:
+            if not isinstance(adapter, dict):
+                continue
+            addresses = tuple(a for a in adapter.get("addresses") or [] if isinstance(a, str))
+            name = next(
+                (_text(adapter.get(k)) for k in ("profile", "ssid", "dns_suffix", "name") if _text(adapter.get(k))), ""
+            )
+            networks.append(DeviceNetwork(name=name, kind=_text(adapter.get("kind")), addresses=addresses))
+
+        users = tuple(
+            DeviceUser(name=_text(u.get("name")), active=u.get("state") != "disconnected")
+            for u in data.get("users") or []
+            if isinstance(u, dict) and _text(u.get("name"))
+        )
+        disks: list[DeviceDisk] = []
+        for d in data.get("disks") or []:
+            if not isinstance(d, dict) or not _text(d.get("drive")):
+                continue
+            total, free = _num(d.get("total_gb")), _num(d.get("free_gb"))
+            if total is not None and free is not None:
+                disks.append(DeviceDisk(drive=_text(d["drive"]), total_gb=total, free_gb=free))
+
+        return cls(
+            reported_at=_parse_time(data.get("reported_at")),
+            host_name=_text(host.get("name")),
+            domain=_text(host.get("domain")),
+            public_ip=_text(data.get("public_ip")),
+            address=_text(data.get("address")),
+            network=_text(data.get("network_name")),
+            networks=tuple(networks),
+            users=users,
+            os_name=_text(os_.get("name")),
+            os_version=_text(os_.get("version")),
+            os_build=_text(os_.get("build")),
+            boot=_parse_time(data.get("boot")),
+            time_zone=_text(data.get("time_zone")),
+            memory_total_mb=_num(memory.get("total_mb")),
+            memory_free_mb=_num(memory.get("free_mb")),
+            disks=tuple(disks),
+            agent_version=_text(agent.get("version")),
+        )
+
+
 @dataclass(frozen=True)
 class Check:
     """Ein Check, wie ihn `GET /api/v1/checks` liefert."""
@@ -89,6 +208,7 @@ class Check:
     last_ping: datetime | None
     status_since: datetime | None
     last_detail: str
+    device: DeviceData | None = None  # nur bei Geräten (kind "device"), die sich schon gemeldet haben
 
     @classmethod
     def from_json(cls, data: dict[str, Any]) -> "Check":
@@ -105,6 +225,7 @@ class Check:
             last_ping=_parse_time(data.get("last_ping")),
             status_since=_parse_time(data.get("status_since")),
             last_detail=str(data.get("last_detail") or ""),
+            device=DeviceData.from_json(data.get("device")),
         )
 
 

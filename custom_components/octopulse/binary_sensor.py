@@ -10,7 +10,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import OctoPulseConfigEntry
 from .api import Check
-from .const import PROBLEM_STATUSES, STATUS_DOWN, STATUS_LATE, STATUS_UP
+from .const import PROBLEM_STATUSES, STATUS_DOWN, STATUS_LATE, STATUS_OFFLINE, STATUS_UP
 from .entity import OctoPulseCheckEntity, OctoPulseServerEntity, async_setup_check_entities
 
 PARALLEL_UPDATES = 0
@@ -24,7 +24,10 @@ async def async_setup_entry(
 
 
 class OctoPulseCheckSensor(OctoPulseCheckEntity, BinarySensorEntity):
-    """An, wenn der Check online ist. Aus bei ausgefallen und überfällig.
+    """An, wenn der Check online ist. Aus bei ausgefallen und überfällig, bei Geräten auch bei offline.
+
+    Ein Gerät, das aus ist, steht auf offline: Das ist kein Ausfall und zählt deshalb nicht in "Probleme",
+    der Sensor ist aber aus (nicht erreichbar).
 
     Pausiert, wartend und in Wartung: unbekannt. In diesen Fällen sagt OctoPulse bewusst nichts über den Dienst,
     und eine Automation soll daraus keinen Alarm machen.
@@ -43,7 +46,7 @@ class OctoPulseCheckSensor(OctoPulseCheckEntity, BinarySensorEntity):
             return None
         if check.status == STATUS_UP:
             return True
-        if check.status in (STATUS_DOWN, STATUS_LATE):
+        if check.status in (STATUS_DOWN, STATUS_LATE, STATUS_OFFLINE):
             return False
         return None
 

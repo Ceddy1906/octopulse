@@ -146,7 +146,8 @@
           "down": "Ausgefallen",
           "new": "Wartet",
           "paused": "Pausiert",
-          "maintenance": "Wartung"
+          "maintenance": "Wartung",
+          "offline": "Offline"
         }
       },
       "last_ping": {
@@ -163,6 +164,36 @@
       },
       "heartbeat_last_sent": {
         "name": "Letzter Heartbeat"
+      },
+      "host_name": {
+        "name": "Rechnername"
+      },
+      "ip_address": {
+        "name": "IP-Adresse"
+      },
+      "public_ip": {
+        "name": "Öffentliche IP"
+      },
+      "network": {
+        "name": "Netzwerk"
+      },
+      "users": {
+        "name": "Angemeldet"
+      },
+      "os": {
+        "name": "Betriebssystem"
+      },
+      "boot": {
+        "name": "Gestartet"
+      },
+      "memory_used": {
+        "name": "Arbeitsspeicher belegt"
+      },
+      "agent_version": {
+        "name": "Client-Version"
+      },
+      "disk_free": {
+        "name": "Laufwerk {drive} frei"
       }
     },
     "switch": {

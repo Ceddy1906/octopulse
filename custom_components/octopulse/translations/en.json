@@ -146,7 +146,8 @@
           "down": "Down",
           "new": "Waiting",
           "paused": "Paused",
-          "maintenance": "Maintenance"
+          "maintenance": "Maintenance",
+          "offline": "Offline"
         }
       },
       "last_ping": {
@@ -163,6 +164,36 @@
       },
       "heartbeat_last_sent": {
         "name": "Last heartbeat"
+      },
+      "host_name": {
+        "name": "Computer name"
+      },
+      "ip_address": {
+        "name": "IP address"
+      },
+      "public_ip": {
+        "name": "Public IP"
+      },
+      "network": {
+        "name": "Network"
+      },
+      "users": {
+        "name": "Signed in"
+      },
+      "os": {
+        "name": "Operating system"
+      },
+      "boot": {
+        "name": "Started"
+      },
+      "memory_used": {
+        "name": "Memory in use"
+      },
+      "agent_version": {
+        "name": "Client version"
+      },
+      "disk_free": {
+        "name": "Drive {drive} free"
       }
     },
     "switch": {

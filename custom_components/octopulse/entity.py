@@ -17,7 +17,13 @@ from .coordinator import OctoPulseCoordinator
 if TYPE_CHECKING:
     from . import OctoPulseConfigEntry
 
-KIND_LABELS = {"heartbeat": "Heartbeat", "http": "HTTP(S)", "tcp": "TCP-Port", "tls": "TLS-Zertifikat"}
+KIND_LABELS = {
+    "heartbeat": "Heartbeat",
+    "http": "HTTP(S)",
+    "tcp": "TCP-Port",
+    "tls": "TLS-Zertifikat",
+    "device": "Windows-PC",
+}
 
 
 # Neuere Home-Assistant-Versionen verknüpfen Geräte über die Geräte-ID (via_device_id) und stufen den Verweis über

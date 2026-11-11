@@ -1,10 +1,10 @@
 {
   "domain": "octopulse",
   "name": "OctoPulse",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "config_flow": true,
-  "documentation": "https://dev.lamaswelt.eu/HomeAssistant/OctoPulse",
-  "issue_tracker": "https://dev.lamaswelt.eu/HomeAssistant/OctoPulse/issues",
+  "documentation": "https://git.manns-welt.eu/homeassistant/OctoPulse",
+  "issue_tracker": "https://git.manns-welt.eu/homeassistant/OctoPulse/issues",
   "codeowners": [],
   "requirements": [],
   "dependencies": [],

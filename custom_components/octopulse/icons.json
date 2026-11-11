@@ -9,23 +9,68 @@
           "down": "mdi:alert-circle-outline",
           "new": "mdi:timer-sand",
           "paused": "mdi:pause-circle-outline",
-          "maintenance": "mdi:wrench-outline"
+          "maintenance": "mdi:wrench-outline",
+          "offline": "mdi:laptop-off"
         }
       },
-      "last_ping": { "default": "mdi:heart-flash" },
-      "checks_total": { "default": "mdi:format-list-checks" },
-      "checks_up": { "default": "mdi:check-all" },
-      "checks_problem": { "default": "mdi:alert-outline" },
-      "heartbeat_last_sent": { "default": "mdi:heart-pulse" }
+      "last_ping": {
+        "default": "mdi:heart-flash"
+      },
+      "checks_total": {
+        "default": "mdi:format-list-checks"
+      },
+      "checks_up": {
+        "default": "mdi:check-all"
+      },
+      "checks_problem": {
+        "default": "mdi:alert-outline"
+      },
+      "heartbeat_last_sent": {
+        "default": "mdi:heart-pulse"
+      },
+      "host_name": {
+        "default": "mdi:desktop-classic"
+      },
+      "ip_address": {
+        "default": "mdi:ip-network-outline"
+      },
+      "public_ip": {
+        "default": "mdi:earth"
+      },
+      "network": {
+        "default": "mdi:lan"
+      },
+      "users": {
+        "default": "mdi:account"
+      },
+      "os": {
+        "default": "mdi:microsoft-windows"
+      },
+      "boot": {
+        "default": "mdi:power"
+      },
+      "memory_used": {
+        "default": "mdi:memory"
+      },
+      "agent_version": {
+        "default": "mdi:tag-outline"
+      },
+      "disk_free": {
+        "default": "mdi:harddisk"
+      }
     },
     "switch": {
       "monitoring": {
         "default": "mdi:eye-outline",
-        "state": { "off": "mdi:eye-off-outline" }
+        "state": {
+          "off": "mdi:eye-off-outline"
+        }
       }
     }
   },
   "services": {
-    "send_heartbeat": { "service": "mdi:heart-pulse" }
+    "send_heartbeat": {
+      "service": "mdi:heart-pulse"
+    }
   }
 }

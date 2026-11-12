@@ -184,3 +184,5 @@ python -m venv .venv
 ```
 
 Home Assistant ist für Linux gebaut. Unter Windows fehlen den Test-Paketen die Module `fcntl` und `resource`. Lege in der virtuellen Umgebung (`.venv/Lib/site-packages/`) zwei leere Platzhalter-Dateien mit diesen Namen an (`fcntl.py` mit `LOCK_EX = 2`, `LOCK_NB = 4` und einer Funktion `flock(fd, op)`, `resource.py` mit `RLIMIT_NOFILE = 7`, `getrlimit` und `setrlimit`). Die Tests umgehen selbst die Socket-Sperre, die unter Windows die Ereignisschleife stört (`tests/conftest.py`). Mit WSL oder Docker brauchst du das alles nicht.
+
+Die Tests laufen gegen einen simulierten OctoPulse-Server (kein echtes Netz) und prüfen Geräte-Sensoren, Einrichtung, Neuanmeldung, Optionen, Entitäten, Schalter, Heartbeat (Takt, Wiederholung, Fehler, Geheimhaltung des Tokens) und den Dienst.

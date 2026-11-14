@@ -1,7 +1,7 @@
 {
   "domain": "octopulse",
   "name": "OctoPulse",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "config_flow": true,
   "documentation": "https://git.manns-welt.eu/homeassistant/OctoPulse",
   "issue_tracker": "https://git.manns-welt.eu/homeassistant/OctoPulse/issues",

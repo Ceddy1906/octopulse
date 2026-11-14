@@ -52,6 +52,9 @@
       "memory_used": {
         "default": "mdi:memory"
       },
+      "resolved_ip": {
+        "default": "mdi:dns-outline"
+      },
       "agent_version": {
         "default": "mdi:tag-outline"
       },

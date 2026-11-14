@@ -193,6 +193,24 @@ class DeviceData:
 
 
 @dataclass(frozen=True)
+class DnsData:
+    """Ergebnis der letzten Auflösung eines DNS-Checks (`dns` im Check, ab OctoPulse 0.4.0)."""
+
+    found: tuple[str, ...]
+    ttl_s: int | None
+
+    @classmethod
+    def from_json(cls, data: Any) -> "DnsData | None":
+        """Liest das `dns`-Objekt. Bei Unbrauchbarem kommt None, nie eine Ausnahme."""
+        if not isinstance(data, dict):
+            return None
+        found = tuple(a.strip() for a in data.get("found") or [] if isinstance(a, str) and a.strip())
+        if not found:
+            return None
+        return cls(found=found, ttl_s=_num(data.get("ttl_s")))
+
+
+@dataclass(frozen=True)
 class Check:
     """Ein Check, wie ihn `GET /api/v1/checks` liefert."""
 
@@ -209,9 +227,14 @@ class Check:
     status_since: datetime | None
     last_detail: str
     device: DeviceData | None = None  # nur bei Geräten (kind "device"), die sich schon gemeldet haben
+    dns: DnsData | None = None  # nur bei DNS-Checks nach der ersten Auflösung
+    expected_ips: tuple[str, ...] = ()  # nur bei DNS-Checks: die erwarteten Adressen
+    dns_match: str = ""  # contains oder exact
+    dns_on_change: str = ""  # alert oder adopt
 
     @classmethod
     def from_json(cls, data: dict[str, Any]) -> "Check":
+        probe = data.get("probe") if isinstance(data.get("probe"), dict) else {}
         return cls(
             id=int(data["id"]),
             name=str(data.get("name") or f"Check {data['id']}"),
@@ -226,6 +249,12 @@ class Check:
             status_since=_parse_time(data.get("status_since")),
             last_detail=str(data.get("last_detail") or ""),
             device=DeviceData.from_json(data.get("device")),
+            dns=DnsData.from_json(data.get("dns")),
+            expected_ips=tuple(
+                a for a in (probe.get("expected_ips") or []) if isinstance(a, str)
+            ),
+            dns_match=str(probe.get("dns_match") or ""),
+            dns_on_change=str(probe.get("dns_on_change") or ""),
         )
 
 

@@ -189,6 +189,9 @@
       "memory_used": {
         "name": "Arbeitsspeicher belegt"
       },
+      "resolved_ip": {
+        "name": "Aufgelöste IP"
+      },
       "agent_version": {
         "name": "Client-Version"
       },

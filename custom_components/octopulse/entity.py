@@ -23,6 +23,7 @@ KIND_LABELS = {
     "tcp": "TCP-Port",
     "tls": "TLS-Zertifikat",
     "device": "Windows-PC",
+    "dns": "DNS",
 }
 
 

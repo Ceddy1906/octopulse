@@ -81,6 +81,26 @@ actions:
       message: "{{ trigger.to_state.state }} ist an {{ states('sensor.pc_max_rechnername') }} angemeldet"
 ```
 
+**Zusätzlich bei DNS-Checks** (OctoPulse prüft, ob ein Name noch auf die erwartete IP-Adresse zeigt, zum Beispiel bei Dyn-DNS). Ab OctoPulse 0.4.0:
+
+| Entität | Bedeutung |
+|---|---|
+| `sensor.<check>_aufgeloste_ip` | Die IP-Adresse(n), auf die der Name bei der letzten Auflösung zeigte (bei mehreren mit Komma getrennt). Attribute: `addresses` (Liste), `ttl` (Sekunden), `expected` (erwartete Adressen), `match` (`contains` oder `exact`), `on_change` (`alert` oder `adopt`). Vor der ersten Auflösung *unbekannt* |
+
+Der Name steht im Attribut `target` des Binärsensors. Der Binärsensor ist **aus**, wenn die gefundene Adresse nicht der erwarteten entspricht (Alarmzustand) und „Probleme“ an. Im Modus *Neue Adresse übernehmen* gilt eine geänderte Adresse nicht als Ausfall: Der Sensor „Aufgelöste IP“ zeigt dann einfach die neue Adresse, und eine Automation kann auf die Änderung reagieren:
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: sensor.heimnetz_dns_aufgeloste_ip
+    not_from: [unknown, unavailable]
+    not_to: [unknown, unavailable]
+actions:
+  - action: notify.mobile_app_handy
+    data:
+      message: "Die IP von {{ state_attr('binary_sensor.heimnetz_dns', 'target') }} ist jetzt {{ trigger.to_state.state }}"
+```
+
 **Für den Server:**
 
 | Entität | Bedeutung |

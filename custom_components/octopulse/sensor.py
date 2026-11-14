@@ -178,6 +178,8 @@ def _check_entities(entry: OctoPulseConfigEntry, check: Check) -> list[SensorEnt
     entities: list[SensorEntity] = [OctoPulseCheckSensor(entry, check, d) for d in CHECK_SENSORS]
     if check.kind == "device":
         entities.extend(OctoPulseDeviceSensor(entry, check, d) for d in DEVICE_SENSORS)
+    if check.kind == "dns":
+        entities.append(OctoPulseResolvedIpSensor(entry, check))
     return entities
 
 
@@ -325,3 +327,39 @@ class OctoPulseDiskSensor(OctoPulseCheckEntity, SensorEntity):
         if disk is None:
             return None
         return {"total_gb": disk.total_gb, "free_percent": disk.free_percent}
+
+
+class OctoPulseResolvedIpSensor(OctoPulseCheckEntity, SensorEntity):
+    """Die IP-Adresse(n), auf die der Name eines DNS-Checks bei der letzten Auflösung zeigte.
+
+    Bei mehreren Adressen (Round-Robin, IPv4 und IPv6) steht der Zustand mit Komma getrennt, die Liste steht im Attribut
+    `addresses`. Das ist praktisch bei Dyn-DNS: Eine Automation kann auf eine Änderung des Zustands reagieren.
+    """
+
+    _attr_translation_key = "resolved_ip"
+
+    def __init__(self, entry: OctoPulseConfigEntry, check: Check) -> None:
+        super().__init__(entry, check, "resolved_ip")
+
+    @property
+    def native_value(self) -> str | None:
+        check = self.check
+        if check is None or check.dns is None:
+            return None
+        return ", ".join(check.dns.found)[:255]  # Zustände sind in Home Assistant höchstens 255 Zeichen lang
+
+    @property
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        check = self.check
+        if check is None:
+            return None
+        attrs: dict[str, Any] = {"expected": list(check.expected_ips)}
+        if check.dns is not None:
+            attrs["addresses"] = list(check.dns.found)
+            if check.dns.ttl_s is not None:
+                attrs["ttl"] = check.dns.ttl_s
+        if check.dns_match:
+            attrs["match"] = check.dns_match
+        if check.dns_on_change:
+            attrs["on_change"] = check.dns_on_change
+        return attrs

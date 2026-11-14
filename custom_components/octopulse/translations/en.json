@@ -189,6 +189,9 @@
       "memory_used": {
         "name": "Memory in use"
       },
+      "resolved_ip": {
+        "name": "Resolved IP"
+      },
       "agent_version": {
         "name": "Client version"
       },
